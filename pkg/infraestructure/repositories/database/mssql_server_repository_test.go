@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/CESARBR/knot-thing-sql/internal/entities"
@@ -10,19 +9,12 @@ import (
 )
 
 func TestGivenValidStatementCaptureDataFromSQLServerDatabase(t *testing.T) {
-	databaseConfiguration := entities.Database{
-		Driver:           "mssql",
-		ConnectionString: "",
-	}
-	applicationConfiguration := entities.Application{
-		NumberParallelTags: 10,
-		Context:            "sqlserver",
-	}
-	connection := NewSQLConnection(databaseConfiguration, applicationConfiguration)
-
+	connection := new(connectionMock)
+	connection.On("Create").Return(nil)
+	connection.On("Destroy").Return(nil)
 	connection.Create()
 	defer connection.Destroy()
-	queries := entities.Query{}
+	queries := entities.Query{Mapping: map[int]string{1: TEST_SQL_QUERY}}
 	sql := SQL{
 		Connection: connection,
 		Queries:    queries,
@@ -30,10 +22,10 @@ func TestGivenValidStatementCaptureDataFromSQLServerDatabase(t *testing.T) {
 	repository := MSSQLServerRepository{sql}
 
 	statement := entities.Statement{
+		ID:        1,
 		Timestamp: "",
 	}
 
-	rows, err := repository.Get(statement)
-	fmt.Println(rows)
+	_, err := repository.Get(statement)
 	assert.Nil(t, err)
 }

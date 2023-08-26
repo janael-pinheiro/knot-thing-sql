@@ -6,12 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/CESARBR/knot-thing-sql/internal/entities"
-	"github.com/CESARBR/knot-thing-sql/internal/gateways/knot"
+	sqlEntities "github.com/CESARBR/knot-thing-sql/internal/entities"
 	"github.com/CESARBR/knot-thing-sql/internal/utils"
 	"github.com/CESARBR/knot-thing-sql/pkg/application"
 	"github.com/CESARBR/knot-thing-sql/pkg/infraestructure/repositories/database"
 	"github.com/CESARBR/knot-thing-sql/pkg/logging"
+	"github.com/janael-pinheiro/knot-cloud-sdk-golang/pkg/entities"
+	"github.com/janael-pinheiro/knot-cloud-sdk-golang/pkg/gateways/knot"
 )
 
 func main() {
@@ -21,7 +22,7 @@ func main() {
 	log := setupLogger(applicationConfiguration.LogFilepath)
 	logger := log.Get("Main")
 
-	transmissionChannel := make(chan entities.CapturedData, len(applicationConfiguration.PertinentTags))
+	transmissionChannel := make(chan sqlEntities.CapturedData, len(applicationConfiguration.PertinentTags))
 	builderProperties := application.BuilderProperties{
 		ApplicationConfiguration: applicationConfiguration,
 		Logger:                   log,
@@ -47,14 +48,14 @@ func main() {
 	waitUntilShutdown()
 }
 
-func loadConfiguration() (entities.Application, map[string]entities.Device, entities.IntegrationKNoTConfig, entities.Database) {
-	applicationConfiguration, err := utils.ConfigurationParser("internal/configuration/application_configuration.yaml", entities.Application{})
+func loadConfiguration() (sqlEntities.Application, map[string]entities.Device, entities.IntegrationKNoTConfig, sqlEntities.Database) {
+	applicationConfiguration, err := utils.ConfigurationParser("internal/configuration/application_configuration.yaml", sqlEntities.Application{})
 	application.VerifyError(err)
 	deviceConfiguration, err := utils.ConfigurationParser("internal/configuration/device_config.yaml", make(map[string]entities.Device))
 	application.VerifyError(err)
 	knotConfiguration, err := utils.ConfigurationParser("internal/configuration/knot_setup.yaml", entities.IntegrationKNoTConfig{})
 	application.VerifyError(err)
-	databaseConfiguration, err := utils.ConfigurationParser("internal/configuration/database_configuration.yaml", entities.Database{})
+	databaseConfiguration, err := utils.ConfigurationParser("internal/configuration/database_configuration.yaml", sqlEntities.Database{})
 	application.VerifyError(err)
 	return applicationConfiguration, deviceConfiguration, knotConfiguration, databaseConfiguration
 }

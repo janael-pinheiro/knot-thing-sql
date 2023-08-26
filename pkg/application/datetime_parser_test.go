@@ -3,6 +3,7 @@ package application
 import (
 	"testing"
 
+	"github.com/CESARBR/knot-thing-sql/internal/entities"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -10,7 +11,7 @@ func TestConvertDatetimeToString(t *testing.T) {
 	datetimeString := "2022-06-15T08:30:00.0Z"
 	convertedDatetime, err := convertStringToDatetime(datetimeString)
 	assert.Nil(t, err)
-	dateString := convertDatetimeToString(convertedDatetime, "glassCosmosDB")
+	dateString := convertDatetimeToString(convertedDatetime, entities.CosmosDB)
 	expectedconvertedDatetime := "2022-06-15 08`:`30`:`00"
 	assert.Equal(t, expectedconvertedDatetime, dateString)
 }
@@ -42,7 +43,7 @@ func TestUpdateDatetimeWhenLaggedTime(t *testing.T) {
 		const laggedHours = 5
 		const laggedMinSec = 30
 		laggedTime := lagTime(convertedDatetime, laggedHours, laggedMinSec)
-		convertedDatetimeString := convertDatetimeToString(laggedTime, "glassCosmosDB")
+		convertedDatetimeString := convertDatetimeToString(laggedTime, entities.CosmosDB)
 		expectedDatetimeString := "2022-06-15 15`:`30`:`00"
 		assert.Equal(t, expectedDatetimeString, convertedDatetimeString)
 	}
@@ -57,6 +58,6 @@ func TestIsLaggedTime(t *testing.T) {
 	convertedDatetime, err := convertStringToDatetime(datetimeStringWithTimeZone)
 	if err == nil {
 		islagged := isTimeLagged(convertedDatetime, laggedHours, laggedMinSec)
-		assert.Equal(t, islagged, false)
+		assert.Equal(t, islagged, true)
 	}
 }

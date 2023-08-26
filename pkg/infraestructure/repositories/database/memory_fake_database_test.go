@@ -8,14 +8,14 @@ import (
 )
 
 func TestListData(t *testing.T) {
-	fake_database_memory := FakeDatabaseMemory{}
-	_, err := fake_database_memory.List()
+	fakeDatabaseMemory := FakeDatabaseMemory{}
+	_, err := fakeDatabaseMemory.List()
 	assert.Nil(t, err)
 }
 
 func TestGetData(t *testing.T) {
 	statement := entities.Statement{}
-	fake_database_memory := FakeDatabaseMemory{}
-	_, err := fake_database_memory.Get(statement)
+	fakeDatabaseMemory := FakeDatabaseMemory{}
+	_, err := fakeDatabaseMemory.Get(statement)
 	assert.Nil(t, err)
 }

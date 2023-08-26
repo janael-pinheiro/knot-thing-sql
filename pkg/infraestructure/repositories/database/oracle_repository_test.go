@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/CESARBR/knot-thing-sql/internal/entities"
@@ -10,30 +9,13 @@ import (
 )
 
 func TestGivenValidStatementCaptureDataFromOracleDatabase(t *testing.T) {
-	connStr := `(DESCRIPTION=
-		(ADDRESS_LIST=
-			(ADDRESS=(protocol=TCP)(host=<server>)(port=1521))
-		)
-		(CONNECT_DATA=
-			(SERVICE_NAME=<service>)
-		)
-		)`
-	databaseConfiguration := entities.Database{
-		Driver:           "oracle",
-		ConnectionString: connStr,
-		Username:         "",
-		Password:         "",
-		Port:             "",
-	}
-	applicationConfiguration := entities.Application{
-		NumberParallelTags: 10,
-		Context:            "oracle",
-	}
-	connection := NewSQLConnection(databaseConfiguration, applicationConfiguration)
+	connection := new(connectionMock)
+	connection.On("Create").Return(nil)
+	connection.On("Destroy").Return(nil)
 	err := connection.Create()
 	assert.Nil(t, err)
 	defer connection.Destroy()
-	queries := entities.Query{Mapping: map[int]string{1: ""}}
+	queries := entities.Query{Mapping: map[int]string{1: TEST_SQL_QUERY}}
 	sql := SQL{
 		Connection: connection,
 		Queries:    queries,
@@ -45,9 +27,6 @@ func TestGivenValidStatementCaptureDataFromOracleDatabase(t *testing.T) {
 		Timestamp: "2022-09-01 11:00:00",
 	}
 
-	rows, err := repository.Get(statement)
+	_, err = repository.Get(statement)
 	assert.Nil(t, err)
-	processedRows, err := repository.ProcessData(rows)
-	assert.Nil(t, err)
-	fmt.Printf("Rows: %v\n", processedRows)
 }

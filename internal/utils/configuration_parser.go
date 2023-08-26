@@ -1,19 +1,20 @@
 package utils
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
-	"github.com/CESARBR/knot-thing-sql/internal/entities"
+	sqlEntities "github.com/CESARBR/knot-thing-sql/internal/entities"
+	"github.com/janael-pinheiro/knot-cloud-sdk-golang/pkg/entities"
 	"gopkg.in/yaml.v2"
 )
 
 type config interface {
-	entities.Database | entities.Application | entities.Query | map[string]entities.Device | entities.IntegrationKNoTConfig | map[int]string
+	sqlEntities.Database | sqlEntities.Application | sqlEntities.Query | map[string]entities.Device | entities.IntegrationKNoTConfig | map[int]string
 }
 
 func readTextFile(filepathName string) ([]byte, error) {
-	fileContent, err := ioutil.ReadFile(filepath.Clean(filepathName))
+	fileContent, err := os.ReadFile(filepath.Clean(filepathName))
 	return fileContent, err
 }
 

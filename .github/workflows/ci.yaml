@@ -1,0 +1,42 @@
+name: KNoT thing SQL
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go 1.18
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.18'
+
+      - name: Install dependencies
+        run: go get ./...
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: |
+            go test -v ./... -coverprofile coverage.out -covermode count
+            go tool cover -func coverage.out
+
+      - name: Test coverage
+        env:
+          TESTCOVERAGE_THRESHOLD: 30
+        run: |
+            echo "Quality gate: checking test coverage is above threshold..."
+            echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
+            totalCoverage=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
+            echo "Current test coverage : $totalCoverage %"
+            if (( $(echo "$totalCoverage $TESTCOVERAGE_THRESHOLD" | awk '{print ($1 > $2)}') )); then
+                echo "OK"
+            else
+                echo "Current test coverage is below threshold. Please add more unit tests."
+                echo "Failed"
+                exit 1
+            fi

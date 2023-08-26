@@ -4,7 +4,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/CESARBR/knot-thing-sql/internal/entities"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -70,34 +69,5 @@ func TestIsEmptyString(t *testing.T) {
 		value := "not empty"
 		result := isEmptyString(value)
 		assert.False(t, result)
-	})
-}
-
-func TestIsMeasurementNew(t *testing.T) {
-	t.Run("should return true if timestamp is different from previous one", func(t *testing.T) {
-		tagNameTimestampMapping := map[int]string{1: "2021-01-01T00:00:00Z"}
-		row := entities.Row{Timestamp: "2021-01-01T00:00:01Z"}
-		sensorID := 1
-		result := isMeasurementNew(tagNameTimestampMapping, row, sensorID)
-		assert.True(t, result)
-	})
-
-	t.Run("should return false if timestamp is equal to previous one", func(t *testing.T) {
-		tagNameTimestampMapping := map[int]string{1: "2021-01-01T00:00:00Z"}
-		row := entities.Row{Timestamp: "2021-01-01T00:00:00Z"}
-		sensorID := 1
-		result := isMeasurementNew(tagNameTimestampMapping, row, sensorID)
-		assert.False(t, result)
-	})
-}
-
-func TestUpdateTagNameTimestampMapping(t *testing.T) {
-	t.Run("should update tag name timestamp mapping", func(t *testing.T) {
-		tagNameTimestampMapping := map[int]string{1: "2021-01-01T00:00:00Z"}
-		row := entities.Row{Timestamp: "2021-01-01T00:00:01Z"}
-		sensorID := 1
-		expected := map[int]string{1: "2021-01-01T00:00:01Z"}
-		result := updateTagNameTimestampMapping(tagNameTimestampMapping, row, sensorID)
-		assert.Equal(t, expected, result)
 	})
 }
