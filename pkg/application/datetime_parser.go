@@ -15,9 +15,9 @@ func removeSQLPlaceholder(timestamp string) string {
 	return strings.Replace(timestamp, ":", "`:`", -1)
 }
 
-//Used to maintain compatibility with sql placeholder management,
-//even if a specific DBMS does not need it, such as SQL Server.
-//In this way, the function only returns the received value, without making any changes.
+// Used to maintain compatibility with sql placeholder management,
+// even if a specific DBMS does not need it, such as SQL Server.
+// In this way, the function only returns the received value, without making any changes.
 func keepSQLPlaceholder(timestamp string) string {
 	return timestamp
 }
@@ -46,8 +46,8 @@ func getCurrentDatetime(timeOffSet int) time.Time {
 }
 
 func isTimeLagged(convertedDatetime time.Time, laggedHours int, minLagSec int) bool {
-	const brasilia_time = -3
-	now := getCurrentDatetime(brasilia_time)
+	const brasiliaTime = -3
+	now := getCurrentDatetime(brasiliaTime)
 	laggedTime := lagTime(now, laggedHours, minLagSec)
 	return convertedDatetime.Before(laggedTime)
 }

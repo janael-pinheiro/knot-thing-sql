@@ -52,6 +52,10 @@ go test -v -coverprofile=coverage.out .\\...
     - 2: "SELECT value, timestamp FROM sensor_data WHERE tagname='XPTO2' AND timestamp > '2022-09-28 07:44:01' ORDER BY timestamp ASC"
 - <span style="color:red">**Caution: the sensor id needs to be consistent across all files.**</span>
 
+## Environment variable
+```sh
+export DEVICE_CONFIG_FILEPATH=internal/configuration/device_config.yaml
+```
  
 ### Special tip
 When working with gocosmos, to avoid problems with creating unnecessary goroutines, comment out line 793 (go db.connectionOpener(ctx)) of file Go\src\database\sql\sql.go. These goroutines are created and wait for a termination signal sent by the database driver. The driver used, gocosmos, does not send this signal as this operation is irrelevant to it. Thus, created goroutines are never terminated and would lead KNoT SQL to a goroutine leak. Other drivers may dispense with this configuration.
